@@ -6,9 +6,9 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Test'
-copyright = '2025, Me'
-author = 'Me'
+project = 'Learning Notes'
+copyright = '2025, Bartatos'
+author = 'Bartatos'
 release = '1.0'
 
 # -- General configuration ---------------------------------------------------
