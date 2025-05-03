@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Read The Docs &mdash; Learning Notes 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=f115507d"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="prev" title="Something Notes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Learning Notes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Robot/index.html">Robots Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Something Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Read The Docs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">1. 环境配置与安装</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#readthedocs">2. ReadtheDocs的正式使用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#markdown">3. Markdown语言的使用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#readthedocs-git">4.使用ReadtheDocs+Git的在线管理方式</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Learning Notes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Something Notes</a></li>
+      <li class="breadcrumb-item active">Read The Docs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Something/ReadtheDocs.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="read-the-docs">
+<h1>Read The Docs<a class="headerlink" href="#read-the-docs" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>1. 环境配置与安装<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>该环境基于Sphinx，使用Markdown格式编写，使用git进行提交与版本管理。请在使用前安装以下依赖包：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">Sphinx</span>  <span class="c1">#安装Sphinx</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">autobuild</span> <span class="c1">#安装Sphinx 自动编译包</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx_rtd_theme</span> <span class="c1">#安装Sphinx 显示主题</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">myst</span><span class="o">-</span><span class="n">parser</span> <span class="c1">#安装Markdown语言所需的依赖包</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx_copybutton</span> <span class="c1">#安装一键复制键</span>
+</pre></div>
+</div>
+<p>执行后在终端/命令行中使用命令快速构建项目：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sphinx</span><span class="o">-</span><span class="n">quickstart</span> <span class="c1">#请在选择语言时输入zh_CN</span>
+</pre></div>
+</div>
+</section>
+<section id="readthedocs">
+<h2>2. ReadtheDocs的正式使用<a class="headerlink" href="#readthedocs" title="Link to this heading"></a></h2>
+<p>到这里，你已经可以在本地管理你的文档了，在终端输入：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>会在build/html中生成多种html文件（如果没有，则是在使用quickstart时选择了共同目录，选Y即可），其中，index.html为你的工程主页，在ReadtheDoc中，这是你的首页。</p>
+<p>现在打开你的source文件夹，这里会显示你所有文档，即未来管理你的文档的关键目录，现在里面只会有conf.py文件与index.rst文件。其中conf.py将配置sphinx的拓展、语言、主题等。现在，将html_theme改为：sphinx_rtd_theme。</p>
+<p>再回到你的工程根目录，重新make html！再打开你的index.html</p>
+<p>此时你会发现，你的文档主题发生了变化。</p>
+<p>现在，在source文件夹中新建一个page.rst文件，这是一个使用另一种文档语言的文件，随便在里面写点什么，然后打开index.rst，并将你的page像这样放在下面：</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="c">.. Test documentation master file, created by</span>
+<span class="c">   sphinx-quickstart on Sun Apr 13 19:39:11 2025.</span>
+<span class="c">   You can adapt this file completely to your liking, but it should at least</span>
+<span class="c">   contain the root `toctree` directive.</span>
+
+<span class="gh">Test documentation</span>
+<span class="gh">==================</span>
+
+Add your content using <span class="s">``reStructuredText``</span> syntax. See the
+<span class="s">`reStructuredText </span><span class="si">&lt;https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html&gt;</span><span class="s">`_</span>
+documentation for details.
+
+
+<span class="p">..</span> <span class="ow">toctree</span><span class="p">::</span>
+   <span class="nc">:maxdepth:</span> 2
+   <span class="nc">:caption:</span> Contents:
+
+   page1
+   page2
+</pre></div>
+</div>
+<p>再重新make html，此时就会产生了两个子目录。这就是大致的RTD的使用方式，恭喜你成功入门。</p>
+</section>
+<section id="markdown">
+<h2>3. Markdown语言的使用<a class="headerlink" href="#markdown" title="Link to this heading"></a></h2>
+<p>想必许多开发者在使用这个文档管理项目之前，使用的语言大多都是Markdown，但不幸的是，这个项目原生不支持Markdown的语言，但好在使用者众多，奉献者众多，感谢大佬们开源了各种支持Markdown的插件，并且在一开始，我就让你安装好了。</p>
+<p>现在我们将利用myst_parser、sphinxcontrib.mermaid与sphinx_copybutton将md文件加入RTD中，打开conf.py，像这样改动：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;myst_parser&#39;</span><span class="p">,</span><span class="s1">&#39;sphinxcontrib.mermaid&#39;</span><span class="p">,</span> <span class="s2">&quot;sphinx_copybutton&quot;</span><span class="p">,]</span>
+
+<span class="n">source_suffix</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;.rst&#39;</span><span class="p">:</span> <span class="s1">&#39;restructuredtext&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;.md&#39;</span><span class="p">:</span> <span class="s1">&#39;markdown&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">myst_enable_extensions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;tasklist&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;deflist&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dollarmath&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">templates_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_templates&#39;</span><span class="p">]</span>
+<span class="n">exclude_patterns</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">language</span> <span class="o">=</span> <span class="s1">&#39;zh_CN&#39;</span>
+</pre></div>
+</div>
+<p>并将你的page.rst改编为.md文件，随意在里面写点什么，再重新make html。</p>
+<p>就通过了！</p>
+</section>
+<section id="readthedocs-git">
+<h2>4.使用ReadtheDocs+Git的在线管理方式<a class="headerlink" href="#readthedocs-git" title="Link to this heading"></a></h2>
+<p>这一部分需要你在git上创建仓库，并同步到ReadtheDocs中，事实上，有很多人都卡在了这一步，如果你按照我的方式进行配置：无法在RTD的官网上编译通过，其实就是在其环境中没有我们安装的这些的插件。</p>
+<p>首先，在你的工程根目录新建:”.readthedocs.yaml”文件，内容为：</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read the Docs configuration file</span>
+<span class="c1"># See https://docs.readthedocs.io/en/stable/config-file/v2.html for details</span>
+
+<span class="c1"># Required</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="c1"># Set the OS, Python version, and other tools you might need</span>
+<span class="nt">build</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">python</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.13&quot;</span>
+
+<span class="c1"># Build documentation in the &quot;docs/&quot; directory with Sphinx</span>
+<span class="nt">sphinx</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">configuration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">source/conf.py</span>
+
+<span class="c1"># Optionally, but recommended,</span>
+<span class="c1"># declare the Python requirements required to build your documentation</span>
+<span class="c1"># See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html</span>
+<span class="nt">python</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">install</span><span class="p">:</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">requirements</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./requirements.txt</span>
+</pre></div>
+</div>
+<p>根据你的环境更改即可。</p>
+<p>随后，在根目录中使用指令：</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span><span class="w"> </span><span class="n">freeze</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>生成的requirements.txt将帮助官网进行依赖包下载。</p>
+<p>以上就是全部，欢迎你来到ReadtheDocs！</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="index.html" class="btn btn-neutral float-left" title="Something Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2025, Bartatos。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
