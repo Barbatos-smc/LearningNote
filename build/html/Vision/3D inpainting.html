@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D 点云补全方法 &mdash; Learning Notes 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="Robots Notes" href="../Robot/index.html" />
+    <link rel="prev" title="DDPM+LDM+VAE+DiffGS Learning Note" href="DiffGS.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Learning Notes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Architecture/index.html">架构学习笔记</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2D &amp; 3D Vision Learning Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="VAE.html">VAE 变分自编码器与 GraspNet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3DGS.html">3D Gaussian Splatting (3DGS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DiffGS.html">DDPM+LDM+VAE+DiffGS Learning Note</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3D 点云补全方法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#svdformer-pointsea-ijcv-2025">SVDFormer_PointSea [IJCV 2025]</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">1.不完全点云通过投影，获得了类似于三视图的深度图像。</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pointnet-f-p-resnet-18f-v-featurefusion">2.三维点云通过三个集合抽象层的 PointNet++ 获取三维点云特征<span class="math notranslate nohighlight">\(F_P\)</span>，三视图通过一个基于ResNet-18的网络获得三视图特征<span class="math notranslate nohighlight">\(F_v\)</span>，将两个特征通过FeatureFusion，获取一个基础的点云骨架。</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sdgpipeline">3.SDG的pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#genpc-cvpr-2025">GenPC [CVPR 2025]</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#depth-prompting">Depth Prompting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#d-generative-model">3D Generative Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#geometric-preserving-fusion">Geometric Preserving Fusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#gaussiananything-iclr-2025">GaussianAnything [ICLR 2025]</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Robot/index.html">Robots Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Something/index.html">Something Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Learning Notes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">2D &amp; 3D Vision Learning Notes</a></li>
+      <li class="breadcrumb-item active">3D 点云补全方法</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Vision/3D inpainting.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="d">
+<h1>3D 点云补全方法<a class="headerlink" href="#d" title="Link to this heading"></a></h1>
+<section id="svdformer-pointsea-ijcv-2025">
+<h2>SVDFormer_PointSea [IJCV 2025]<a class="headerlink" href="#svdformer-pointsea-ijcv-2025" title="Link to this heading"></a></h2>
+<p><img alt="image-20250822100935749" src="../_images/image-20250822100935749.png" /></p>
+<p>3 Step：</p>
+<section id="id1">
+<h3>1.不完全点云通过投影，获得了类似于三视图的深度图像。<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+</section>
+<section id="pointnet-f-p-resnet-18f-v-featurefusion">
+<h3>2.三维点云通过三个集合抽象层的 PointNet++ 获取三维点云特征<span class="math notranslate nohighlight">\(F_P\)</span>，三视图通过一个基于ResNet-18的网络获得三视图特征<span class="math notranslate nohighlight">\(F_v\)</span>，将两个特征通过FeatureFusion，获取一个基础的点云骨架。<a class="headerlink" href="#pointnet-f-p-resnet-18f-v-featurefusion" title="Link to this heading"></a></h3>
+<p>FeatureFusion的pipeline为：</p>
+<p><strong><img alt="image-20250822101436444" src="../_images/image-20250822101436444.png" /></strong></p>
+<p>其中，<span class="math notranslate nohighlight">\(f_{Vi}\)</span>作为第一个自注意力机制的输入，原文提到是patch-wise feature，通过第一次最大池化获得优化后的三视图图像的特征，随后和SVDFormer相同。又通过了一个自注意力机制，去强化第一个自注意力机制强化后的图像特征，最后输出的<span class="math notranslate nohighlight">\(F^{'}_v\)</span>通过最大池化层，并继续点云特征<span class="math notranslate nohighlight">\(F_P\)</span>关联，最后通过解码，获得完整的稀疏点云<span class="math notranslate nohighlight">\(P_0\)</span>。</p>
+</section>
+<section id="sdgpipeline">
+<h3>3.SDG的pipeline<a class="headerlink" href="#sdgpipeline" title="Link to this heading"></a></h3>
+<p><img alt="image-20250822102504496" src="../_images/image-20250822102504496.png" /></p>
+<p>分为上下两层，上层为结构分析，下层为相似度对齐，使得<span class="math notranslate nohighlight">\(P_{in}\)</span>与<span class="math notranslate nohighlight">\(P_{i-1}\)</span>得到组合特征<span class="math notranslate nohighlight">\(F_l\)</span>，包含源自学习的形状先验，与从 Pin 中找到的类似几何模式中学习得到的。通过O1再获取一层偏移量，加到<span class="math notranslate nohighlight">\(P_{i-1}\)</span>中，生成新一轮的基础模型。重复两次。</p>
+<p>与SVDFormer不同的是，加入了Selection模块，目的是原来是直接将两个拼接起来，但是：</p>
+<p><img alt="image-20250822103301878" src="../_images/image-20250822103301878.png" /></p>
+<p><em><strong>然而，在不同的缺失区域，这两个单元的重要性也不尽相同。例如，在某些缺失区域，由于对称性等特性，输入观测点的几何形状几乎完全相同。在这种情况下，&quot;相似性对齐 &quot;单元中的信息对这些点的作用更大。受此启发，本文通过路径选择模块整合了这两种特征类型，并自适应地选择了更为关键的特征。</strong></em></p>
+</section>
+</section>
+<section id="genpc-cvpr-2025">
+<h2>GenPC [CVPR 2025]<a class="headerlink" href="#genpc-cvpr-2025" title="Link to this heading"></a></h2>
+<p><img alt="image-20250822111743118" src="../_images/image-20250822111743118.png" /></p>
+<section id="depth-prompting">
+<h3>Depth Prompting<a class="headerlink" href="#depth-prompting" title="Link to this heading"></a></h3>
+<p><img alt="image-20250822111916600" src="../_images/image-20250822111916600.png" /></p>
+<p>在恢复为<span class="math notranslate nohighlight">\(D_{raw}\)</span>时，作者对点云采样时选择了订点采样，并使用了B的隐点去除策略，选择了convex hull上点最多的视角如Draw。随后，在获得<span class="math notranslate nohighlight">\(D_{raw}\)</span>后，使用了一个基于Diffusion的预训练2D补全模型，对<span class="math notranslate nohighlight">\(D_{raw}\)</span>进行了inpainting，获得<span class="math notranslate nohighlight">\(D_{c}\)</span>,随后使用ControlNet进行了图像生成。</p>
+</section>
+<section id="d-generative-model">
+<h3>3D Generative Model<a class="headerlink" href="#d-generative-model" title="Link to this heading"></a></h3>
+<p>image-to-3D</p>
+</section>
+<section id="geometric-preserving-fusion">
+<h3>Geometric Preserving Fusion<a class="headerlink" href="#geometric-preserving-fusion" title="Link to this heading"></a></h3>
+<p><img alt="image-20250822114716775" src="../_images/image-20250822114716775.png" /></p>
+<p>通过调整Pgen的缩放尺度，不断与Ppartical进行ICP，对齐结果生成Pall，但其实是要区分Ppartical和Pmiss部分的。</p>
+<p>随后将二者分别初始化为3DGS，partical不训练，miss训练，通过计算partical在Vscan视角下render的RGB和Depth通过补全模型Zero123的生成图与Gall的SDS损失，对miss部分进行优化；随后为了降低对partical部分的改动，又加入了一个Gall和Gpartical之间的MSE损失计算。</p>
+</section>
+</section>
+<section id="gaussiananything-iclr-2025">
+<h2>GaussianAnything [ICLR 2025]<a class="headerlink" href="#gaussiananything-iclr-2025" title="Link to this heading"></a></h2>
+<p><img alt="image-20250825094106172" src="../_images/image-20250825094106172.png" /></p>
+<p>1.训练目标</p>
+<p>1）训练Encoder，使输入的RGB-D-N图像对应到Point Cloud Latent</p>
+<p>2）一个条件级联的transformer去噪器，在给定条件与步长的情况下对latent noise去噪</p>
+<p>3）一个Decoder用于将Point Cloud Latent 还原到3DGS</p>
+<p><img alt="image-20250825095924969" src="../_images/image-20250825095924969.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="DiffGS.html" class="btn btn-neutral float-left" title="DDPM+LDM+VAE+DiffGS Learning Note" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../Robot/index.html" class="btn btn-neutral float-right" title="Robots Notes" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2025, Bartatos。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

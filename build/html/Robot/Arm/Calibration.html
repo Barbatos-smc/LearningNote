@@ -25,6 +25,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../../genindex.html" />
     <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="Virtual Model Control" href="../VMC/index.html" />
     <link rel="prev" title="1.运动学解算" href="kinematics.html" /> 
 </head>
 
@@ -47,15 +48,25 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../Something/ReadtheDocs.html">Read The Docs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="kinematics.html">1.运动学解算</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">2.手眼标定</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">2.1 相关介绍</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">2.2 眼在手上的标定方式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Architecture/index.html">架构学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Vision/index.html">2D &amp; 3D Vision Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Robots Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Robots Arms</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kinematics.html">1.运动学解算</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">2.手眼标定</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">2.1 相关介绍</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">2.2 眼在手上的标定方式</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../VMC/index.html">Virtual Model Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Wheel-Legged/index.html">Wheel-Legged Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Something/index.html">Something Notes</a></li>
 </ul>
 
         </div>
@@ -72,9 +83,11 @@
           <div role="navigation" aria-label="页面导航">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Robots Notes</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Robots Arms</a></li>
       <li class="breadcrumb-item active">2.手眼标定</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/Robot/Arm/Calibration.md.txt" rel="nofollow"> 查看页面源码</a>
+            <a href="../../_sources/Robot/ARM/Calibration.md.txt" rel="nofollow"> 查看页面源码</a>
       </li>
   </ul>
   <hr/>
@@ -91,75 +104,60 @@
 </section>
 <section id="id3">
 <h2>2.2 眼在手上的标定方式<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
-<p><img alt="本地路径" src="../../_images/robot1.png" /></p>
+<p>​	<img alt="image-20250503151047449" src="../../_images/image-20250503151047449.png" /></p>
 <p>​	如果我们需要控制一个机械臂，通常会基于机械臂的基坐标系(base_link)进行控制，以这个base_link作为世界坐标系的原点，来表达一个物体的位姿或者任何一个位姿。而任何视觉的抓取网络，基于的坐标系都是相机坐标系(cam_link)，因此，无论怎么变化，我们都应该想办法将cam_link下的位姿，转换到base_link下的位姿。</p>
-<p>​	如果学习了机器人学，并很好的掌握了正逆运动学解算，我们会很容易的获得工具坐标系(tool_link)与base_link之间的变换矩阵：</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-T^{base}_{tool}\\
-\end{split}\]</div>
-<p>​	而抓取网络输出的也是cam_link到目标姿态的变换矩阵：</p>
-<div class="math notranslate nohighlight">
-\[
+<p>​	如果学习了机器人学，并很好的掌握了正逆运动学解算，我们会很容易的获得工具坐标系(tool_link)与base_link之间的变换矩阵：
+$<span class="math notranslate nohighlight">\(
+T^{base}_{tool}
+\)</span><span class="math notranslate nohighlight">\(
+而抓取网络输出的也是cam_link到目标姿态的变换矩阵：
+\)</span><span class="math notranslate nohighlight">\(
 T^{cam}_{target}
-\]</div>
-<p>​	我们需要标定相机相对于哪个坐标系的量，才能获得一个永远不变的定值？答案显而易见，是cam与tool之间的位置关系，无论机械臂如何移动，这二者物理位置固定后，不会随着机械臂的关节角度变化而继续变化了。但如果是Eye_to_hand的话，则应该标定cam与base之间的位置关系了。</p>
-<p>​	我们假定代求量为：</p>
-<div class="math notranslate nohighlight">
-\[
+\)</span>$
+我们需要标定相机相对于哪个坐标系的量，才能获得一个永远不变的定值？答案显而易见，是cam与tool之间的位置关系，无论机械臂如何移动，这二者物理位置固定后，不会随着机械臂的关节角度变化而继续变化了。但如果是Eye_to_hand的话，则应该标定cam与base之间的位置关系了。</p>
+<p>我们假定代求量为：
+$<span class="math notranslate nohighlight">\(
 T^{tool}_{camera}
-\]</div>
-<p>​</p>
-<p>​	根据我们已经有的关系，应当建立一个公式，是这样的：</p>
-<div class="math notranslate nohighlight">
-\[
+\)</span><span class="math notranslate nohighlight">\(
+根据我们已经有的关系，应当建立一个公式，是这样的：
+\)</span><span class="math notranslate nohighlight">\(
 P_{base} = 
 T^{base}_{tool}P_{tool} = 
 T^{base}_{tool}T^{tool}_{cam}P_{cam}
-\]</div>
-<p>​</p>
-<p>​	意味着代求量如果获得，就可以完美的控制机械臂到达相对与base_link下的位姿了，怎么求呢？在手眼标定时，我们会进行多组数据的测量，这里先假定为2组。</p>
-<div class="math notranslate nohighlight">
-\[
+\)</span><span class="math notranslate nohighlight">\(
+意味着代求量如果获得，就可以完美的控制机械臂到达相对与base_link下的位姿了，怎么求呢？在手眼标定时，我们会进行多组数据的测量，这里先假定为2组。
+\)</span><span class="math notranslate nohighlight">\(
 P_{base} = 
 T^{base}_{tool1}T^{tool}_{cam}{T^{target}_{cam1}}^{-1}P_{board}
-\]</div>
+\)</span>$</p>
 <div class="math notranslate nohighlight">
 \[
 P_{base} = 
 T^{base}_{tool2}T^{tool}_{cam}{T^{target}_{cam2}}^{-1}P_{board}
 \]</div>
-<p>​</p>
-<p>​	已知目标与机械臂的位置关系不会变化，那么就有这样的等式存在：</p>
-<div class="math notranslate nohighlight">
-\[
+<p>已知目标与机械臂的位置关系不会变化，那么就有这样的等式存在：
+$<span class="math notranslate nohighlight">\(
 T^{base}_{target} = 
 T^{base}_{tool1}T^{tool}_{cam}{T^{target}_{cam1}}^{-1}=
 T^{base}_{tool2}T^{tool}_{cam}{T^{target}_{cam2}}^{-1}
-\]</div>
-<p>​</p>
-<p>​	我们设代求量为X，末端到基座的关系为A ，相机到目标的关系为B，那么有：</p>
-<div class="math notranslate nohighlight">
-\[
+\)</span><span class="math notranslate nohighlight">\(
+我们设代求量为X，末端到基座的关系为A ，相机到目标的关系为B，那么有：
+\)</span><span class="math notranslate nohighlight">\(
 A_1X{B_1}^{-1} = A_2X{B_2}^{-1}
-\]</div>
-<p>​</p>
-<p>​	进而可以推导：</p>
-<div class="math notranslate nohighlight">
-\[
+\)</span><span class="math notranslate nohighlight">\(
+进而可以推导：
+\)</span><span class="math notranslate nohighlight">\(
 {A_2}^{-1}A_1X = X{B_2}^{-1}{B_1}
-\]</div>
-<p>​</p>
-<p>​	以此类推，随着采集数据的增多，会获得越来越接近真值的代求量，我们获得了代求量，就获得了在base_link下的目标姿态。</p>
-<div class="math notranslate nohighlight">
-\[
-{P}_{base} = 
+\)</span><span class="math notranslate nohighlight">\(
+以此类推，随着采集数据的增多，会获得越来越接近真值的代求量，我们获得了代求量，就获得了在base_link下的目标姿态。
+\)</span><span class="math notranslate nohighlight">\(
+P_{base} = 
 T^{base}_{tool}T^{tool}_{cam}P_{cam}
-\]</div>
-<p>​	同时，由于需要实现世界坐标系到像素坐标系的投影，我们需要完成世界坐标系到相机坐标系、相机坐标系到图像坐标系、图像坐标系到像素坐标系的标定，由于在投影时，只取决于相机出厂后定义好的参数，因此我们需要实现下式中对P的标定。</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-{}\begin{bmatrix}
+\)</span>$</p>
+<p>​	同时，由于需要实现世界坐标系到像素坐标系的投影，我们需要完成世界坐标系到相机坐标系、相机坐标系到图像坐标系、图像坐标系到像素坐标系的标定，由于在投影时，只取决于相机出厂后定义好的参数，因此我们需要实现下式中对P的标定。
+$$</p>
+<div class="amsmath math notranslate nohighlight" id="equation-672c3233-8d7f-42fe-97df-714eeccf2926">
+<span class="eqno">(1)<a class="headerlink" href="#equation-672c3233-8d7f-42fe-97df-714eeccf2926" title="Permalink to this equation"></a></span>\[\begin{bmatrix}
 u'  \\
 v'  \\
 z'  \\
@@ -169,18 +167,19 @@ X_w  \\
 Y_w  \\
 Z_w  \\
 1  
-\end{bmatrix}
-\end{split}\]</div>
-<p>​	其中，P由一个内参矩阵与一个外参矩阵组成，其中外参矩阵的系数与相机的世界坐标有关，这一部分我们在手眼标定部分已经实现，因此只需要标定内参矩阵即可，它由焦距与光学中心组成，如式3-31所示，其中，  ,   为相机的焦距的横纵坐标；  ,   为相机的光学中心在接受面的横纵坐标。目前，常用到的标定方式为张正友标定法。</p>
+\end{bmatrix}\]</div>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-{K} = 
-\begin{bmatrix}
+\[
+​	其中，P由一个内参矩阵与一个外参矩阵组成，其中外参矩阵的系数与相机的世界坐标有关，这一部分我们在手眼标定部分已经实现，因此只需要标定内参矩阵即可，它由焦距与光学中心组成，如式3-31所示，其中，fx,fy为相机的焦距的横纵坐标；cx, cy为相机的光学中心在接受面的横纵坐标。目前，常用到的标定方式为张正友标定法。
+\]</div>
+<p>K =</p>
+<div class="amsmath math notranslate nohighlight" id="equation-7ea76f22-5e92-4a40-9442-7946e31a0ac2">
+<span class="eqno">(2)<a class="headerlink" href="#equation-7ea76f22-5e92-4a40-9442-7946e31a0ac2" title="Permalink to this equation"></a></span>\[\begin{bmatrix}
 f_x &amp; 0 &amp; c_x \\
 0 &amp; f_y &amp; c_y  \\
 0 &amp; 0 &amp; 1  \\
-\end{bmatrix}
-\end{split}\]</div>
+\end{bmatrix}\]</div>
+<p>$$</p>
 </section>
 </section>
 
@@ -189,6 +188,7 @@ f_x &amp; 0 &amp; c_x \\
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
         <a href="kinematics.html" class="btn btn-neutral float-left" title="1.运动学解算" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../VMC/index.html" class="btn btn-neutral float-right" title="Virtual Model Control" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

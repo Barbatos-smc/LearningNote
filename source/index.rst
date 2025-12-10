@@ -12,8 +12,10 @@ This is a Learning Notes About Robots.
 
 .. toctree::
    :maxdepth: 3
-   :caption: 目录
+   :caption: Contents
 
+   Architecture/index.rst
+   Vision/index.rst
    Robot/index.rst
    Something/index.rst
 

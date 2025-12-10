@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DDPM+LDM+VAE+DiffGS Learning Note &mdash; Learning Notes 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="3D 点云补全方法" href="3D%20inpainting.html" />
+    <link rel="prev" title="3D Gaussian Splatting (3DGS)" href="3DGS.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Learning Notes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Architecture/index.html">架构学习笔记</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2D &amp; 3D Vision Learning Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="VAE.html">VAE 变分自编码器与 GraspNet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3DGS.html">3D Gaussian Splatting (3DGS)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DDPM+LDM+VAE+DiffGS Learning Note</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline">1.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#latent-diffusion-model">2.Latent Diffusion Model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#denoising-diffusion-probabilistic-models-ddpm">2.1 Denoising Diffusion Probabilistic Models(DDPM)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vae">2.2 VAE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ldms">2.3 LDMs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#diffgs-pipeline">3.DiffGS Pipeline解读</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3D%20inpainting.html">3D 点云补全方法</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Robot/index.html">Robots Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Something/index.html">Something Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Learning Notes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">2D &amp; 3D Vision Learning Notes</a></li>
+      <li class="breadcrumb-item active">DDPM+LDM+VAE+DiffGS Learning Note</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Vision/DiffGS.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="ddpm-ldm-vae-diffgs-learning-note">
+<h1>DDPM+LDM+VAE+DiffGS Learning Note<a class="headerlink" href="#ddpm-ldm-vae-diffgs-learning-note" title="Link to this heading"></a></h1>
+<section id="pipeline">
+<h2>1.Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading"></a></h2>
+<p><img alt="image-20250820114702758" src="../_images/image-20250820114702758.png" /></p>
+<p>文章采用的主要结构一共有三点，一个是使用Latent Diffusion Model的VAE结构；一个是把原高斯公式解耦成了三个表示，GauPF(概率)、GauCF(颜色)、GauTF(变换)；最后通过这三个函数再通过一种基于八叉树的优化算法，生成精确的高斯基元中心位置。</p>
+</section>
+<section id="latent-diffusion-model">
+<h2>2.Latent Diffusion Model<a class="headerlink" href="#latent-diffusion-model" title="Link to this heading"></a></h2>
+<section id="denoising-diffusion-probabilistic-models-ddpm">
+<h3>2.1 Denoising Diffusion Probabilistic Models(DDPM)<a class="headerlink" href="#denoising-diffusion-probabilistic-models-ddpm" title="Link to this heading"></a></h3>
+<p><img alt="image-20250820121845814" src="../_images/image-20250820121845814.png" /></p>
+<p>这篇文章是Diffsion的基础模型，分为两个过程，前向过程（forward process）与反向过程（reverse process）二者都是一个参数化的马尔科夫链。实际上，RNN（循环神经网络）就是一个马尔可夫过程，其含义就是当前时刻的状态实际上是与过去时刻有关的，且当前的状态是保留着过去状态的，如下图所示。</p>
+<p><img alt="img" src="https://i-blog.csdnimg.cn/blog_migrate/030d46f79bbae7c0e3edb0a71f55ec92.png" /></p>
+<section id="forward-process">
+<h4>2.1.1 Forward Process<a class="headerlink" href="#forward-process" title="Link to this heading"></a></h4>
+<p>从DDPM的示意图可以看出，前向过程就是一个通过对数据逐渐增加高斯噪音直至数据变成随机噪音的过程。经过T步加噪，对第T-1张图像的处理为：<span class="math notranslate nohighlight">\(X_t = f(X_{t-1})\)</span>，其中，<span class="math notranslate nohighlight">\(f(x) = \sqrt{1-\beta_t}*X_{t-1}+\sqrt{\beta_t}*Z_t\)</span>，其中，<span class="math notranslate nohighlight">\(Z_t \sim N(0,I)\)</span>。由于DDPM马尔科夫链是参数化的，因此我们可以直接获得从第一步到最后一步的加噪，其式如下所示：
+$<span class="math notranslate nohighlight">\(
+X_t = \sqrt{a_ta_{t-1}...a_1}*X_0+\sqrt{1-a_ta_{t-1}...a_1}*Z
+\)</span>$
+通过这样的一步，将直接从原图获取全噪声图像。</p>
+</section>
+<section id="reverse-process">
+<h4>2.1.2 Reverse Process<a class="headerlink" href="#reverse-process" title="Link to this heading"></a></h4>
+<p>通过第一步的加噪，逆向过程的目的就是通过对于当前图像噪声的预测，对全噪声图进行恢复，通过每一个step实现恢复原图的一个过程，这个预测噪声的，采用了神经网络的方法去完成。与式1同理，逆向过程也可以直接将最后一步恢复为原图，如式2所示，但作者讨论过这样的做法，并不能很好的恢复为原图，因此一步一步来最好。
+$<span class="math notranslate nohighlight">\(
+X_0 = \frac{X_t-\sqrt{1-a_ta_{t-1}...a_1}\tilde{Z}}{\sqrt{a_ta_{t-1}...a_1}}
+\)</span><span class="math notranslate nohighlight">\(
+其中，\)</span>\tilde{Z}=UNet(X_t,t)<span class="math notranslate nohighlight">\(，其中不知道的就只剩找到T时刻与T-1时刻之间的\)</span>f(X_t,\tilde{Z})$就可以指逆向的过程了。</p>
+<p><em>中间的细节我留个空白在这里，我觉得当前对我是不重要的，以后精度的时候再补充</em>总之，作者利用重参数化与其他概率方法，得到了最终的公式3。
+$<span class="math notranslate nohighlight">\(
+X_{t-1} = \frac{1}{\sqrt{a_t}}(X_t-\frac{\beta_t}{\sqrt{1-\bar{a_t}}}*\tilde{Z},\frac{1-\bar{a_{t-1}}}{1-\bar{a_t}}*\beta_t)
+\)</span>$
+<img alt="image-20250820143353759" src="../_images/image-20250820143353759.png" /></p>
+<p>从这个Sampling就可以看出，<span class="math notranslate nohighlight">\(X_T\)</span>作为一个新的高斯噪声图，会被输入到reverse process进行处理，从而生成一个新的图片。</p>
+</section>
+<section id="id1">
+<h4>2.1.3 不足<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<p>对于一个更具有泛化性的模型，一张照片作为训练集图像是不够的，为了提高模型的泛化性，对于图片本身特征的提炼会大幅的加大UNet参数的大小，使模型本身变的臃肿，不仅拖延了训练速度，且使模型注意到了很多无需注意到的细节，浪费了算力资源。</p>
+</section>
+<section id="id2">
+<h4>2.1.4 改进<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<p>将像素空间的训练转换到latent space中，利用Encoder-Decoder的结构的隐藏层去训练。</p>
+</section>
+</section>
+<section id="vae">
+<h3>2.2 VAE<a class="headerlink" href="#vae" title="Link to this heading"></a></h3>
+<p>VAE的全称是Variational Auto-Encoders，变分自编码器是对AutoEncoder的一种改善。AE是一种无监督的神经网络，学习了输入数据的特征，然后再利用编码器将特征空间转变为原来的图像。</p>
+<p><img alt="image-20250820150232469" src="../_images/image-20250820150232469.png" /></p>
+<p>上图为AutoEncoder的训练过程，本质上是通过自监督的训练过程，将latent space中的特征向量与输入的image对应上，给出一组输入<span class="math notranslate nohighlight">\({x_1,x_2....x_t}\)</span>就会存在latent space 中对应的特征向量<span class="math notranslate nohighlight">\({w_1,w_2....w_t}\)</span>，本质上，AE是不具有生成能力的，加入我们给出一个新的latent space中的新的向量<span class="math notranslate nohighlight">\(w_n\)</span>，是找不到对应的<span class="math notranslate nohighlight">\(x\)</span>的，因为本质上就是离散的一组数据相互对应，latent space并没有正则化，自然不能找到新的输出与之对应了。</p>
+<p>因此VAE对AE进行了改善，Encoder的输出不再是一种离散的数据，而是一种概率分布，因此再训练好对应的Decoder之后，实际上就是找到一种解码概率为图像的一种方法，就具有生成能力了。具体来说，是将固定的特征向量的概率分布逼近规定的标准正态分布，这里VAE利用到了KL散度。</p>
+<p><em>再留个坑，数学推导还是不太重要，现在先不写了，毕竟只是入门哈哈，以后会填上的。</em></p>
+</section>
+<section id="ldms">
+<h3>2.3 LDMs<a class="headerlink" href="#ldms" title="Link to this heading"></a></h3>
+<p><img alt="image-20250820154828072" src="../_images/image-20250820154828072.png" /></p>
+<p>可以看到，Latent diffusion models 实际上就是再VAE的签空间过程中，加入了DDPM，然后又引入了一个交叉注意力机制来使用多模态引导图像生成。</p>
+<p>原理就不讲了，就是上面这几部分拼凑起来，需要注意的是LDM的训练过程是有顺序的：</p>
+<p>第一步是训练VAE，使Encoder与Decoder具有编解码latent space的能力；第二步才是训练DDPM的UNet，因为DDPM原始的意义就是将原图加噪、降噪恢复成原图的训练过程，部署为eval模式时，也是输出图片，因此在潜空间中，也是将潜向量恢复/创造潜向量的过程。</p>
+<p><img alt="img" src="https://i-blog.csdnimg.cn/blog_migrate/1921ebab37d428312aaf2e230ab4d5d0.png" /></p>
+<p>最后训练交叉注意力机制：</p>
+<p><img alt="img" src="https://i-blog.csdnimg.cn/blog_migrate/7ef49e887b3608777581e95df025cdd7.png" /></p>
+<p>其实到这里就差不多了，DiffGS多的一个环节就是VAE的Decoder换成了一个Triplane Decoder，将潜在向量还原为一个三维的坐标点。然后又有一步拆解为解耦高斯表达最后还原的一步。</p>
+</section>
+<section id="diffgs-pipeline">
+<h3>3.DiffGS Pipeline解读<a class="headerlink" href="#diffgs-pipeline" title="Link to this heading"></a></h3>
+<p>这里需要理解一下的是，一开始我其实是把E-D这一部分看作是这篇文章的VAE，但实际上这样来看的话，一方面是忽略了后文把三个解耦函数也看作是三个神经预测器了；另一方面是triplane decoder输出的三维坐标系实际上是没有gt和他算loss的。</p>
+<p>所以decoder应该一直包括到三个神经预测器和后面的提取为高斯的<span class="math notranslate nohighlight">\(\mathcal{L}\)</span>。</p>
+<p><img alt="image-20250820162509218" src="../_images/image-20250820162509218.png" /></p>
+<p>这是VAE的训练Loss，其中，神经预测器的数据是这样得出的：</p>
+<p><img alt="image-20250820162539628" src="../_images/image-20250820162539628.png" /></p>
+<p><img alt="image-20250820162635659" src="../_images/image-20250820162635659.png" /></p>
+<p><img alt="image-20250820162612319" src="../_images/image-20250820162612319.png" /></p>
+<p>然后和LDM一样，生成任务的时候把Decoder冻结住，调整三个神经预测器的工作顺序，就能做出来一个生成的pipeline了。</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="3DGS.html" class="btn btn-neutral float-left" title="3D Gaussian Splatting (3DGS)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="3D%20inpainting.html" class="btn btn-neutral float-right" title="3D 点云补全方法" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2025, Bartatos。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

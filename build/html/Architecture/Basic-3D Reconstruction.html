@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Reconstruction Basic &mdash; Learning Notes 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="2D &amp; 3D Vision Learning Notes" href="../Vision/index.html" />
+    <link rel="prev" title="DeepLearning 基础学习笔记" href="DL.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Learning Notes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">架构学习笔记</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ML.html">MechineLearning 基础学习笔记</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DL.html">DeepLearning 基础学习笔记</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3D Reconstruction Basic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">0. 写在前面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">1. 相机模型基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">2. 单视图测量</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#d">2.1 2D变换类型：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">2.2 影消点与影消线</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><em><strong>二维表示:</strong></em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6"><em><strong>三维表示:</strong></em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">2.3 单视图重构</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">3 三维重建</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">3.1 重建基础</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">3.2 极几何</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">3.3 基础矩阵估计</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">4.1 平行视图的深度估计</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">4.2 非平行视图的平行视图变换方法：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">4.3 对应点搜索</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Vision/index.html">2D &amp; 3D Vision Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Robot/index.html">Robots Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Something/index.html">Something Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Learning Notes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">架构学习笔记</a></li>
+      <li class="breadcrumb-item active">3D Reconstruction Basic</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Architecture/Basic-3D Reconstruction.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="d-reconstruction-basic">
+<h1>3D Reconstruction Basic<a class="headerlink" href="#d-reconstruction-basic" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>0. 写在前面<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>每次写点什么东西之前，我总喜欢创造出来一个第零章。在这个文档笔记中，还是以巩固基础为主吧，无论是相机模型还是那些老的传统重建方法，我想都有可能是未来某个idea的灵感来源，因此巩固基础可能才是重中之重。可能也会有实践，会在实现后补充在下面，那就开始吧。</p>
+</section>
+<section id="id2">
+<h2>1. 相机模型基础<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>为了将真实物体记录到相片上，胶片诞生，但随之而来的问题上，是真实物体的点不能与胶片上的点一一对应，就像这样：</p>
+<p><img alt="image-20250923093554882.png" src="../_images/image-20250923093554882.png" /></p>
+<p>因此添加针孔，因此来阻断某些点在散射出过滤掉某些光线，使其只能通过一组光线，这就是小孔成像的基本原理，那其构成的图片，也如下图所示：</p>
+<p><img alt="image-20250923093733142.png" src="../_images/image-20250923093733142.png" /></p>
+<p>因此，在小孔（即光圈）较大时，就会导致阻挡的光线组变少，大量的冗余光线进入光圈，致使胶片上的某一点由多束光线掺杂起来，形成重叠或交叠，但同时，亮度也会变低。如下图所示：</p>
+<p><img alt="image-20250923094109896.png" src="../_images/image-20250923094109896.png" /></p>
+<p>因此，如何利用好一个点发射出的多束光线形成一个明亮而清晰的点就成了关键问题。</p>
+<p><img alt="image-20250923094507522.png" src="../_images/image-20250923094507522.png" /></p>
+<p>因此在透镜模型中，空间点到像素坐标系的映射关系就是这样表示：</p>
+<p><img alt="image-20250923095935151" src="../_images/image-20250923095935151.png" /></p>
+<p>其中，由于空间点的基坐标系与常用的像素坐标系的关系具有偏差，因此进行了常量的偏置，同时又因为单位的不统一，产生了比例系数，用于分别等同于横纵坐标的两个转换系数（pixel-m）</p>
+<p>但由于z的存在，导致真实坐标与像素坐标之间的转换关系并非线性，因此引入其次坐标系。</p>
+<p>欧式距离转换为齐次坐标系的变换为下图：</p>
+<p><img alt="image-20250923100627895" src="../_images/image-20250923100627895.png" /></p>
+<p>齐次坐标转换为欧式坐标的变换如下图：</p>
+<p><img alt="image-20250923100652515" src="../_images/image-20250923100652515.png" /></p>
+<p>因此齐次坐标系下，真实坐标与像素坐标之间的转换关系如下所示：其实就是标定的矩阵。</p>
+<p>考虑像素坐标系存在畸变的情况，</p>
+<p><img alt="image-20250923101703999" src="../_images/image-20250923101703999.png" /></p>
+<p>因此，M为投影矩阵，前三列构成了内参矩阵K</p>
+<p><img alt="image-20250923101810104" src="../_images/image-20250923101810104.png" /></p>
+<p>实际上，为了更好的表述客观物体，需要建立一个世界坐标系，来准确的描述真实世界中各个点的坐标位置。在将世界坐标系中的点转换到相机坐标系（需要注意的是，在之前我们描述真实物体时，采用的坐标系是相机坐标系</p>
+<p>）时，需要考虑矩阵变换的形式，通常是以一个旋转矩阵和一个平移矩阵搞定的，这一部分可以参考我手眼标定的那个环节。</p>
+<p><img alt="image-20250923102706921" src="../_images/image-20250923102706921.png" /></p>
+<p><img alt="image-20250923102744576" src="../_images/image-20250923102744576.png" /></p>
+</section>
+<section id="id3">
+<h2>2. 单视图测量<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="d">
+<h3>2.1 2D变换类型：<a class="headerlink" href="#d" title="Link to this heading"></a></h3>
+<p>1.等距变换：3DOF的平面平移变换</p>
+<p><img alt="image-20251014163753719" src="../_images/image-20251014163753719.png" /><img alt="image-20251014163800518" src="../_images/image-20251014163800518.png" /></p>
+<p>2.相似变换：3+1DOF的平面缩放变换（加入缩放矩阵S）</p>
+<p><img alt="image-20251014163914123" src="../_images/image-20251014163914123.png" /><img alt="image-20251014163922189" src="../_images/image-20251014163922189.png" /></p>
+<p>3.仿射变换：2x2+2DOF的平面非比例缩放变换(平行关系、面积比值保持，角度大小变换)</p>
+<p><img alt="image-20251014164130505" src="../_images/image-20251014164130505.png" /><img alt="image-20251014164136412" src="../_images/image-20251014164136412.png" /></p>
+<p>4.影射变换：2x2+2+2的变换（共线性与四共线点的交比不变）</p>
+<p><img alt="image-20251014164421945" src="../_images/image-20251014164421945.png" /><img alt="image-20251014164430774" src="../_images/image-20251014164430774.png" /></p>
+<p>什么是交比呢：<img alt="image-20251014164555272" src="../_images/image-20251014164555272.png" /></p>
+</section>
+<section id="id4">
+<h3>2.2 影消点与影消线<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+</section>
+<section id="id5">
+<h3><em><strong>二维表示:</strong></em><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>直线的交点用齐次坐标形式表示：</p>
+<p><img alt="image-20251014170631982" src="../_images/image-20251014170631982.png" /></p>
+<p>复习下点乘与叉乘的用途各自是什么吧，点乘的意义很简单，就是进行向量之间元素的运算，计算的结果是一个标量。</p>
+<p>叉乘就是计算两个向量所在平面的法向量，计算的结果是一个向量，也就是法向量。</p>
+<p>然后就是<strong>无穷远点</strong>，在2D的表示中，如果齐次坐标的第三位为0，那么就说明该点是一个无穷远点。同时，这个无穷远点也是两条平行线的交点：证明方法就是利用lx=0即可。</p>
+<p><img alt="image-20251014170957333" src="../_images/image-20251014170957333.png" /></p>
+<p>那么所有的无穷远点，都位于<strong>无穷远直线</strong>上，其表示为：<img alt="image-20251014171241762" src="../_images/image-20251014171241762.png" /></p>
+<p><strong>无穷远点的变换</strong>：无穷远点经过透视变换将不再是一个无穷远点，而经过仿射变换后依旧是一个仿射变换。</p>
+<p><img alt="image-20251014171422515" src="../_images/image-20251014171422515.png" /></p>
+<p><strong>无穷远线的变换</strong>：对于一条直线的变换，存在变换与原线的这样的关系：<img alt="image-20251014171905099" src="../_images/image-20251014171905099.png" /></p>
+<p>同样，对于无穷远线的透视变换，使其不再是一个无穷远线；而经过仿射变换后，仍旧是一条无穷远线。</p>
+<p><img alt="image-20251014172036146" src="../_images/image-20251014172036146.png" /></p>
+</section>
+<section id="id6">
+<h3><em><strong>三维表示:</strong></em><a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>空间中的线的表示方法由两个平面的交线表示，<img alt="image-20251014183725853" src="../_images/image-20251014183725853.png" /></p>
+<p>无穷远点仍旧是两条平行线的焦点，按二维的表示法，则是<img alt="image-20251014183801301" src="../_images/image-20251014183801301.png" /></p>
+<p>影消点：无穷远点再图像平面的投影点</p>
+<p><img alt="image-20251014183907821" src="../_images/image-20251014183907821.png" /></p>
+<p>实际上就是一个实际的无穷远点，因为投射变化，变成了在二维图像中有形状的点。就行一条笔直的公路被拍下来。</p>
+<p>那么，对于一个样例如图所示：</p>
+<p><img alt="image-20251014184140860" src="../_images/image-20251014184140860.png" /></p>
+<p>无穷远点与影消点的关系由推导可知：</p>
+<p><img alt="image-20251014184256557" src="../_images/image-20251014184256557.png" /></p>
+<p><img alt="image-20251014184227428" src="../_images/image-20251014184227428.png" /></p>
+<p>那么很好判断的就是，影消线是影消点的集合，我们找到了影消点自然就知道了影消线的位置，那么我们就可以根据这条线，来确认整个平面的法向量，其中，K为相机的内参矩阵。</p>
+<p><img alt="image-20251014184625037" src="../_images/image-20251014184625037.png" /></p>
+<p>同时，也可以确认由影消点来确认两组平行线之间的夹角：</p>
+<p><img alt="image-20251014185042641" src="../_images/image-20251014185042641.png" /></p>
+</section>
+<section id="id7">
+<h3>2.3 单视图重构<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p><img alt="image-20251014185432366" src="../_images/image-20251014185432366.png" /></p>
+<p>单视图的标定大概就是这么一个流程，重点是获得相机的内参矩阵K，可以注意的是图像中的v1v2v3三个影消点是来自于三维空间中正交的三组平行线选出的，因此才能够获得左下角括号里的三个为0的方程组。</p>
+<p>标定结束之后，就可以通过影消线来获取每个平面对应的法向量了，获得了法向量就相当于得到了整个平面。</p>
+<p><img alt="image-20251014185813302" src="../_images/image-20251014185813302.png" /></p>
+</section>
+</section>
+<section id="id8">
+<h2>3 三维重建<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<section id="id9">
+<h3>3.1 重建基础<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<p>由于单目难以实现比例的确认，即无法识别近大远小造成的透视比例，而人眼却能够分辨出所谓的“视觉魔术”，因此，为了解决这样的问题，通常采用双目相机或两个相机来实现单张图片的重建工作。其原理图如下：</p>
+<p><img alt="image-20251019193121369" src="../_images/image-20251019193121369.png" /></p>
+<p>通常，问题的已知是p与p‘的两张成像点坐标，K与K’平面，以及两个相机之间的RT矩阵，通过这些来求解最终的P点坐标。为了解决这个问题，通常是计算P*，即假定的三维坐标点，我们通过将这个三维坐标点重投影到相机的成像平面上，来计算实际投影坐标与P*投影坐标之间的差值，最小的点即是最终的实际点P。效果如下：</p>
+<p><img alt="image-20251019193637059" src="../_images/image-20251019193637059.png" /></p>
+</section>
+<section id="id10">
+<h3>3.2 极几何<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>极几何的目的是为了描述两个相机之间的成像与实际物体的位置关系，通常是为了统一同一物体在两个相机坐标系的位置表达。</p>
+<p><img alt="image-20251019195221760" src="../_images/image-20251019195221760.png" /></p>
+<p>几个定义：</p>
+<p>极平面：过点P，O1，O2的平面。</p>
+<p>基线：O1与O2的连线。</p>
+<p>极线：极平面与成像平面的交线pe</p>
+<p>极点：基线与成像平面的交点</p>
+<p><img alt="image-20251019195409692" src="../_images/image-20251019195409692.png" /></p>
+<p>还有一个定义是关于本质矩阵E：</p>
+<p><img alt="image-20251020093030478" src="../_images/image-20251020093030478.png" /></p>
+<p>关于本质矩阵E，存在这样的性质：</p>
+<p><img alt="image-20251020093344542" src="../_images/image-20251020093344542.png" /></p>
+<p>本质矩阵实际上是理想情况下的极坐标表述，但这为我们提供了一种思路，在处理普通相机问题时，我们只需要将其处理为理想情况即可。</p>
+<p><img alt="image-20251020094631026" src="../_images/image-20251020094631026.png" /></p>
+<p>随后带入</p>
+<p><img alt="image-20251020094705775" src="../_images/image-20251020094705775.png" /></p>
+<p>即可，同样，基础矩阵也具有这样的性质。</p>
+<p><img alt="image-20251020094738438" src="../_images/image-20251020094738438.png" /></p>
+<p><img alt="image-20251020094752680" src="../_images/image-20251020094752680.png" /></p>
+</section>
+<section id="id11">
+<h3>3.3 基础矩阵估计<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p>八点算法来估计F矩阵</p>
+<p>就是因为需要解决F的七个自由度问题。方法的本质就是在两个视图上选择物体的相同点，在两个成像平面上的不同坐标来确定F矩阵。</p>
+<p><img alt="image-20251020095414917" src="../_images/image-20251020095414917.png" /></p>
+<p>通常，为了提高F的精度，会选择大于八个点来提升算法的鲁棒性。但这样得到的也仅仅是Fhat，不是最终的F矩阵，因为F的定义是奇异矩阵，不满秩，因此需要对其进行奇异值分解。</p>
+<p><img alt="image-20251020095738550" src="../_images/image-20251020095738550.png" /></p>
+<p>为了解决精度不足的问题，常用归一化的八点法，即：</p>
+<p><img alt="image-20251020100054421" src="../_images/image-20251020100054421.png" /></p>
+</section>
+<section id="id12">
+<h3>4.1 平行视图的深度估计<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<p>在日常生活中，由于我们多使用双目相机而非分体相机去估计深度，因此这里着重介绍一下平行试图的深度估计方法。</p>
+<p><img alt="image-20251021125821524" src="../_images/image-20251021125821524.png" /></p>
+<p>在这里首先需要知道一个先验知识，即平行视图中，同一点在两个成像平面上的坐标表达，仅在u轴上存在区别，与上图所表达的内容一致。这就使平行视图的深度估计任务更加简单。</p>
+<p><img alt="image-20251021130058160" src="../_images/image-20251021130058160.png" /></p>
+<p>在这张图像中，我们可以根据相似三角形获得这样的结果：</p>
+<p><img alt="image-20251021130110406" src="../_images/image-20251021130110406.png" /></p>
+<p>即什么呢，我们只需要知道pu-pu‘，就能知道这张图片的深度图了，由于这个值又叫视差，所以深度图又叫做视差图。</p>
+</section>
+<section id="id13">
+<h3>4.2 非平行视图的平行视图变换方法：<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<p>第一步：在两张图片中选取一组对应点，一共要大于等于8组，计算F矩阵。</p>
+<p>第二步：根据第一步获得的基础矩阵，计算两个图像的极点位置。</p>
+<p><img alt="image-20251021130737903" src="../_images/image-20251021130737903.png" /></p>
+<p>第三步，使用透射变换H‘将e’映射到无穷远点（f，0，0）<img alt="image-20251021130852979" src="../_images/image-20251021130852979.png" /></p>
+<p><img alt="image-20251021130914358" src="../_images/image-20251021130914358.png" /><img alt="image-20251021130951860" src="../_images/image-20251021130951860.png" /><img alt="image-20251021131009669" src="../_images/image-20251021131009669.png" /></p>
+<p>第四步，获取对应透视变换矩阵H使得下式最小：<img alt="image-20251021131226329" src="../_images/image-20251021131226329.png" /></p>
+<p>第五步，对新的矩阵H与H‘，对原图进行重新采样。</p>
+</section>
+<section id="id14">
+<h3>4.3 对应点搜索<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<p>相关匹配法：</p>
+<p><img alt="image-20251021131841247" src="../_images/image-20251021131841247.png" /></p>
+<p><img alt="image-20251021131921514" src="../_images/image-20251021131921514.png" /></p>
+<p>为了降低匹配法的错误率，需要为这种方法增加多种约束：唯一性约束，顺序约束，平滑性约束</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="DL.html" class="btn btn-neutral float-left" title="DeepLearning 基础学习笔记" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../Vision/index.html" class="btn btn-neutral float-right" title="2D &amp; 3D Vision Learning Notes" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2025, Bartatos。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

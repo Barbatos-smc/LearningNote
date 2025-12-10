@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>串联连杆轮足机器人 &mdash; Learning Notes 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/translations.js?v=beaddf03"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="Something Notes" href="../../Something/index.html" />
+    <link rel="prev" title="Wheel-Legged Notes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Learning Notes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../Architecture/index.html">架构学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Vision/index.html">2D &amp; 3D Vision Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Robots Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ARM/index.html">Robots Arms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../VMC/index.html">Virtual Model Control</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Wheel-Legged Notes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">串联连杆轮足机器人</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">1. 前言</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">2. 倒立摆</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../Something/index.html">Something Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Learning Notes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Robots Notes</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Wheel-Legged Notes</a></li>
+      <li class="breadcrumb-item active">串联连杆轮足机器人</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/Robot/Wheel-Legged/simulation.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>串联连杆轮足机器人<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>声明：本文档基于世博同学的硬件开源、机械开源，搭建可参考https://github.com/MuShibo/Micro-Wheeled_leg-Robot，感谢无私开源。</p>
+<section id="id2">
+<h2>1. 前言<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>​	在进行建模之前，我们需要明确此次需要搭建的被控对象模型的物理结构如何，如下图所示，为开源搭建的机械结构。</p>
+<p><img alt="RobotReal" src="../../_images/RobotReal.jpg" /></p>
+<p>​	由图所示，该结构为连杆腿结构，由两个驱动电机组成，分别为负责屈伸的关节空心杯舵机与负责运动的轮子无刷电机。由此，建立被控对象一侧的模型如下图所示：</p>
+<img alt="image-20250504142859521" src="../../_images/image-20250504142859521.png" />
+<p>​	在进行控制对象建模前，我想我们需要明确整个模型的输入输出应当是如何的。该机器人分为两个部分，详情可以拆分成2023赛季火锅战队使用的平衡步兵，该步兵的机械组成为两个轮子电机，因此被戏称为<strong>板凳</strong>。在当年实现的功能仅仅是能够控制机器人的移动，并保持平衡功能。这是轮足机器人需求的第一个功能，即平衡与移动。</p>
+<p>​	但在本项目中，之所以会添加一个电机，是因为在执行控制时，为了实现平衡步兵的最佳性能，需要实现跳跃、row轴稳定的主动悬挂的功能。因此，在这里需要的就是轮足机器人的第二个功能，即跳跃与稳定。</p>
+<p>​	因此，本项目将记录我学习的轮足机器人的控制方法，这部分会首先介绍该机器人的理论、建模与仿真部分。首先，我们还是先从<strong>板凳</strong>开始控制。</p>
+</section>
+<section id="id3">
+<h2>2. 倒立摆<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="id4">
+<h3>2.1 倒立摆动力学模型搭建<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>​	若去除三连杆结构，为使机器人进行运动，会构成如下的控制模型：</p>
+<p><img alt="image-20250504170315265" src="../../_images/image-20250504170315265.png" /></p>
+<p>​	学习要将循序渐进，我们就从这个模型开始分析。若不考虑装配误差的纯理想模型，这个模型一共具有五个自由度，由(<span class="math notranslate nohighlight">\(x,y,z,pitch,yaw\)</span>)构成。简化来说，就是一个一阶的倒立摆模型，其构型如下图所示：</p>
+<p><img alt="dceefd442c5f8314d46bab96ce6a0bb6.png" src="../../_images/dceefd442c5f8314d46bab96ce6a0bb6.png" /></p>
+<p>​	其中，左图为构成倒立摆的整体力学模型示意图，右图为倒立摆两部分各自的受力分析图。其中的参数含义如下表所示：</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>字符表示</p></th>
+<th class="head text-center"><p>参数含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(F\)</span></p></td>
+<td class="text-center"><p><em>机器人整体受力</em></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td class="text-center"><p><em>机器人整体位移</em></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(M\)</span></p></td>
+<td class="text-center"><p><em>小车质量</em></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td class="text-center"><p><em>连杆质量</em></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(b\)</span></p></td>
+<td class="text-center"><p><em>摩擦系数</em></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(I\)</span></p></td>
+<td class="text-center"><p><em>连杆绕质心的转动惯量</em></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(\eta\)</span></p></td>
+<td class="text-center"><p><em>连杆转动的阻力系数</em></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(\theta\)</span></p></td>
+<td class="text-center"><p><em>连杆与小车的夹角（参考为下）</em></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(\phi\)</span></p></td>
+<td class="text-center"><p>连杆与小车的夹角（参考为上）</p></td>
+</tr>
+</tbody>
+</table>
+<p>​	分析时，我们需要对该机器人进行整体的平衡状态构建，并通过分析平衡时的状态，建立力学方程，<strong>首先进行水平方向的力学分析：</strong>
+​	以小车为分析对象，其水平受力平衡情况下的构建的牛顿第二定律等式为：
+$<span class="math notranslate nohighlight">\(
+M\ddot{x}+b\dot{x}+N = F
+\)</span><span class="math notranslate nohighlight">\(
+​	以连杆为分析对象，其水平受力平衡情况下的构建的牛顿第二定律等式为：
+\)</span><span class="math notranslate nohighlight">\(
+N = m\frac{d^2}{dt^2}(x+lsin\theta)
+\)</span><span class="math notranslate nohighlight">\(
+​	以内力N为中间变量，对（1）（2）式进行合并，获得一个动力学模型。
+\)</span><span class="math notranslate nohighlight">\(
+(M+m)\ddot{x}+b\dot{x}+ml\ddot{\theta}cos\theta-ml\dot{\theta}^2sin\theta = F
+\)</span>$
+​	然后进行竖直方向的力学分析：</p>
+<p>​	以连杆为分析对象，其竖直受力平衡情况下的构建的牛顿第二定律等式为：
+$<span class="math notranslate nohighlight">\(
+m\frac{d^2}{dt^2}(cos\theta) = P+mg
+\)</span>$</p>
+<p>​	连杆绕转轴具有的力矩平衡公式为：
+$<span class="math notranslate nohighlight">\(
+I\ddot{\theta} = -Plsin\theta-Nlcos\theta-\eta\dot{\theta}
+\)</span><span class="math notranslate nohighlight">\(
+​	将式子（2）（4）（5）联立，获得：
+\)</span><span class="math notranslate nohighlight">\(
+(ml^2+I)\ddot{\theta}+mglsin\theta+\eta\dot{\theta} = -ml\ddot{x}cos\theta
+\)</span><span class="math notranslate nohighlight">\(
+​	又因为在平衡时，\)</span> \phi<span class="math notranslate nohighlight">\(值极小，\)</span>\theta<span class="math notranslate nohighlight">\(值极大，因此在进行线性化时，我们需要考虑到以下的等价关系：
+\)</span><span class="math notranslate nohighlight">\(
+cos\theta = cos(\phi+\pi)=-1\\
+sin\theta = sin(\phi+\pi)=-\phi\\
+{\dot{\phi}}^2 = {\dot{\theta}}^2 = 0
+\)</span><span class="math notranslate nohighlight">\(
+​	因此我们就获得了线性的一阶倒立摆动力学方程：
+\)</span><span class="math notranslate nohighlight">\(
+(M+m)\ddot{x}+b\dot{x}-ml\ddot{\phi} = F\\
+(ml^2+I)\ddot{\phi}-mgl\phi+\eta\dot{\phi} = -ml\ddot{x}
+\)</span><span class="math notranslate nohighlight">\(
+​	随后，由于我们需要建立LQR控制器对其进行控制，我们需要建立型如下的状态空间方程：
+\)</span><span class="math notranslate nohighlight">\(
+\dot{X} = AX+Bu\\
+y = CX+Du
+\)</span><span class="math notranslate nohighlight">\(
+​	其中，输入为力，即F，X为系统中隐藏的状态变量，为了使所有变量都能找到对应，我们建立这样的状态变量：
+\)</span><span class="math notranslate nohighlight">\(
+X = [x,\dot{x},\phi,\dot{\phi}]
+\)</span><span class="math notranslate nohighlight">\(
+​	那么，我们成功构建了这样的状态空间方程：
+\)</span><span class="math notranslate nohighlight">\(
+A = 
+\begin{bmatrix}
+0 &amp; 1 &amp; 0 &amp; 0\\
+0 &amp; \frac{-4b}{4M+m} &amp; \frac{3mg}{4M+m} &amp; \frac{3\eta}{4M+m}\\
+0 &amp; 0 &amp; 0 &amp; 1\\
+0 &amp; \frac{-3b}{4Ml+ml} &amp; \frac{3(M+m)g}{4Ml+ml} &amp; \frac{-3(M+m)\eta}{4Ml^2+ml^2}\\
+\end{bmatrix}\\\\
+B = 
+{\begin{bmatrix}
+0 &amp; \frac{4}{4M+m} &amp; 0 &amp; \frac{3}{4Ml+ml}
+\end{bmatrix}}^T\\\\
+C = 
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0\\
+0 &amp; 0 &amp; 1 &amp; 0\\
+\end{bmatrix}\\\\
+D =
+{\begin{bmatrix}
+0&amp; 0
+\end{bmatrix}}^T
+\)</span>$</p>
+</section>
+<section id="id5">
+<h3>2.2 倒立摆仿真<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>​	我们使用simscape作为仿真工具，首先，利用matlab，在命令行窗口中新建simscape空间：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">smnew</span>
+</pre></div>
+</div>
+<p>​	获得了如下的界面：</p>
+<img alt="image-20250504171032928" src="../../_images/image-20250504171032928.png" />
+<p>​	随后，我们构建一个倒立摆的模型，如下图：</p>
+<p>​</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="index.html" class="btn btn-neutral float-left" title="Wheel-Legged Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../../Something/index.html" class="btn btn-neutral float-right" title="Something Notes" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2025, Bartatos。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
